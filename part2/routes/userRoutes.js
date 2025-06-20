@@ -67,7 +67,21 @@ router.post('/login', async (req, res) => {
 router.post('/logout', async (req, res) => {
   req.session.destroy(); // end session
   res.clearCookie('connect.sid'); // clear cookies
-  res.status(200);
+  res.status(200).send();
+});
+
+// 2-15, owner's dogs router
+router.get('/dogs', async (req, res) => {
+  try {
+    const ownerId = req.session.user.user_id;
+    const [dogs] = await db.query(
+      'SELECT dog_id, name, size FROM Dogs WHERE owner_id = ?',
+      [ownerId]
+    );
+    res.json(dogs);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch dogs' });
+  }
 });
 
 module.exports = router;

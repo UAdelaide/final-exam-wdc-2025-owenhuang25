@@ -25,8 +25,15 @@
       <div class="card-body">
         <form @submit.prevent="submitWalkRequest">
           <div class="mb-3">
-            <label class="form-label">Dog ID</label>
-            <input v-model="form.dog_id" type="number" class="form-control" required>
+            <!-- 2-15, dog name list -->
+            <label class="form-label">Select Your Dog</label>
+            <select v-model="form.dog_id" class="form-select" required>
+              <option disabled value="">-- Select a Dog --</option>
+              <option v-for="dog in dogs" :value="dog.dog_id">
+                {{ dog.name }}
+              </option>
+            </select>
+
           </div>
           <div class="mb-3">
             <label class="form-label">Requested Date & Time</label>
@@ -86,6 +93,19 @@
         const message = ref('');
         const error = ref('');
 
+        // 2-15, dog list
+        const dogs = ref([]);
+
+        // Get owner's dog function
+        async function loadDogs() {
+          try {
+            const dogsRes = await fetch('/api/users/dogs');
+            dogs.value = await dogsRes.json();
+          } catch (err) {
+            error.value = 'Failed to load walk requests';
+          }
+        }
+
         // 2-14, logout function
         async function logout() {
           try {
@@ -126,6 +146,7 @@
               location: ''
             };
             loadWalks();
+
           } catch (err) {
             error.value = err.message;
             message.value = '';
@@ -133,6 +154,7 @@
         }
 
         onMounted(() => {
+          loadDogs(); // 2-15, load dogs
           loadWalks();
         });
 
@@ -142,7 +164,8 @@
           message,
           error,
           submitWalkRequest,
-          logout // 2-14, return logout 
+          logout, // 2-14, return logout
+          dogs // 2-15, return dogs
         };
       }
     }).mount('#app');

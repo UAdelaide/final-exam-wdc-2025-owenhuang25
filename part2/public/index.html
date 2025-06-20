@@ -67,7 +67,7 @@
             }
 
             const data = await response.json(); // parse data
-            sessionStorage.setItem('user', JSON.stringify(data)); // store user info in session storage
+            sessionStorage.setItem('user', JSON.stringify(data.user)); // store user info in session storage
 
             // Check user role
             if (data.user.role === 'owner') {
