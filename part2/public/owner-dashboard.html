@@ -99,7 +99,7 @@
         // Get owner's dog function
         async function loadDogs() {
           try {
-            const dogsRes = await fetch('/api/users/dogs');
+            const dogsRes = await fetch('/api/users/me/dogs');
             dogs.value = await dogsRes.json();
           } catch (err) {
             error.value = 'Failed to load walk requests';

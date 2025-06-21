@@ -71,7 +71,7 @@ router.post('/logout', async (req, res) => {
 });
 
 // 2-15, owner's dogs router
-router.get('/dogs', async (req, res) => {
+router.get('/me/dogs', async (req, res) => {
   try {
     const ownerId = req.session.user.user_id;
     const [dogs] = await db.query(
