@@ -6,6 +6,9 @@ const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
+// 2-17, add dogs router
+var dogsRouter = require('./routes/dogs');
+
 const app = express();
 
 // Middleware
@@ -31,6 +34,7 @@ const userRoutes = require('./routes/userRoutes');
 
 app.use('/api/walks', walkRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/dogs', dogsRouter); // use dogs router
 
 // Export the app instead of listening here
 module.exports = app;

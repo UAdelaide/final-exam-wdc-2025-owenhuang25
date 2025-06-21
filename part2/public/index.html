@@ -24,11 +24,35 @@
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input v-model="password" type="password" id="password" class="form-control" required> <!-- insert password -->
+          <input v-model="password" type="password" id="password" class="form-control" required>
+          <!-- insert password -->
         </div>
         <button type="submit" class="btn btn-primary">Login</button> <!-- login button -->
         <div v-if="error" class="alert alert-danger mt-3">{{ error }}</div> <!-- display error message -->
       </form>
+    </div>
+
+    <!-- 2-17, dogs table -->
+    <div class="p-4">
+      <h2>All Registered Dogs</h2>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Owner</th>
+            <th>Photo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="dog in dogs" :key="dog.dog_id">
+            <td>{{ dog.dog_name }}</td>
+            <td>{{ dog.size }}</td>
+            <td>{{ dog.owner_username }}</td>
+            <td><img :src="dog.image" alt="Dog image" width="100" /></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -41,7 +65,9 @@
           // 2-13, added data for login
           username: '',
           password: '',
-          error: ''
+          error: '',
+          // 2-17
+          dogs: []
         };
       },
       // 2-13, method to handle login
@@ -80,7 +106,25 @@
           } catch (err) { // login failed
             this.error = 'Login failed.';
           }
+        },
+
+        // 2-17, get dog pics
+        async getDogs() {
+          const res = await fetch('/api/dogs');
+          const dogsList = await res.json();
+
+          // Fetch a random image for each dog
+          const dogsWithImage = await Promise.all(dogsList.map(async (dog) => {
+            const imageRes = await fetch('https://dog.ceo/api/breeds/image/random'); // fetch image
+            const imageData = await imageRes.json();
+            return { ...dog, image: imageData.message }; // returns dog info and image
+          }));
+
+          this.dogs = dogsWithImage;
         }
+      },
+      mounted() {
+        this.getDogs(); // 2-17, run getDogs()
       }
     }).mount('#app');
   </script>
